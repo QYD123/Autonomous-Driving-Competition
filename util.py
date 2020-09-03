@@ -109,7 +109,7 @@ def euler_to_Rot(yaw, pitch, roll):
     return np.dot(Y, np.dot(P, R))
 
 
-# 对于滚转角的修正，具体的原因未知。
+# 传参angle = pi的话，首次调用将2*n*pi+k(k为锐角)这样的角度，变成k-pi，在区间[-pi,pi]之间的形式；再次调用，返回k。
 def rotate(x, angle):
     x = x + angle
     x = x - (x + np.pi) // (2 * np.pi) * 2 * np.pi
