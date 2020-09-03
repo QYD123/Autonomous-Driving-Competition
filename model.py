@@ -73,7 +73,7 @@ class Model(nn.Module):
     '''Mixture of previous classes'''
 
     def __init__(self, n_classes):
-        super(MyUNet, self).__init__()
+        super(Model, self).__init__()
         self.base_model = EfficientNet.from_pretrained('efficientnet-b0')
 
         self.conv0 = double_conv(5, 64)
