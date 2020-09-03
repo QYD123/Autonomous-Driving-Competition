@@ -21,7 +21,7 @@ def imread(path, fast_mode=False):
 PATH = "/root/Self-Driving/Data/"  # 加r,告诉编译器这个字符串是个raw string,忽略斜杠的转义作用。
 img = imread(PATH + "train_images/ID_8a6e65317" + '.jpg')
 IMG_SHAPE = img.shape
-# 图像的设置 My-unet
+# 图像的设置
 IMG_WIDTH = 2500
 IMG_HEIGHT = IMG_WIDTH // 16 * 5
 # 图像尺寸的设置 centerpoint - resnet
