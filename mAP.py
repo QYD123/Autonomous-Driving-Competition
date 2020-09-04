@@ -127,7 +127,7 @@ def check_match(idx):
             scores.append(pcar['carid_or_score'])
 
     return result_flg, scores
-    # 返回的是这个进程所有图片，所有车辆的标签（1，0或者无）
+    # 返回:result_flg是这个进程所有图片，所有车辆的TP&FP（1，0或者无）,scores是所有置信度
 
 
 def calculate_AP(precision_list, recall_list):
