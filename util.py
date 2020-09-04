@@ -122,7 +122,7 @@ def _regr_preprocess(regr_dict, flip=False):
         for k in ['x', 'pitch', 'roll']:
             regr_dict[k] = -regr_dict[k]
     for name in ['x', 'y', 'z']:
-        regr_dict[name] = regr_dict[name] / 100  # 对于标签数据的预处理，此处对x、y、z除了一个100，所以在后期处理的时候给乘了回来，原因应该是normal其度量。
+        regr_dict[name] = regr_dict[name] / 100  # 对于标签数据的预处理，此处对x、y、z除了一个100，所以在后期处理的时候给乘了回来，归一化其度量。
     regr_dict['roll'] = rotate(regr_dict['roll'], np.pi)
     regr_dict['pitch_sin'] = sin(regr_dict['pitch'])
     regr_dict['pitch_cos'] = cos(regr_dict['pitch'])
@@ -134,9 +134,9 @@ def _regr_preprocess(regr_dict, flip=False):
 # 从回归预测的得到需要初始标签的形式。
 def _regr_back(regr_dict):
     for name in ['x', 'y', 'z']:
-        regr_dict[name] = regr_dict[name] * 100  # 此处为何要乘以100？
-    regr_dict['roll'] = rotate(regr_dict['roll'], -np.pi)  # 车辆的滚转角为何要如此处理？
-    # 车辆的俯仰角为何要这样计算？
+        regr_dict[name] = regr_dict[name] * 100  # x、y、z乘100，变回去。
+    regr_dict['roll'] = rotate(regr_dict['roll'], -np.pi)  # 滚转角变回K
+    # 车辆的俯仰角由sin、cos变回其角度。
     pitch_sin = regr_dict['pitch_sin'] / np.sqrt(regr_dict['pitch_sin'] ** 2 + regr_dict['pitch_cos'] ** 2)
     pitch_cos = regr_dict['pitch_cos'] / np.sqrt(regr_dict['pitch_sin'] ** 2 + regr_dict['pitch_cos'] ** 2)
     regr_dict['pitch'] = np.arccos(pitch_cos) * np.sign(pitch_sin)
