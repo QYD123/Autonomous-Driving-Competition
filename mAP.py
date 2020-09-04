@@ -153,7 +153,7 @@ def calculate_mAP(valid_df, train_df):
     expanded_train_df = expand_df(train_df, ['model_type', 'pitch', 'yaw', 'roll', 'x', 'y', 'z'])  # 给正确的也加标题
 
     max_workers = 10  # 最大进程
-    n_gt = len(expanded_train_df)  # 标签中的总车辆数(TP+FN)
+    n_gt = len(expanded_train_df)  # 标签中的总车辆数(TP+FP+FN)
     ap_list = []
     p = Pool(processes=max_workers)  # 创建多进程对象
     # confidence_list = [i / 10 for i in range(10, 2, -1)]  # 先去掉重复的阈值，然后将阈值从小到大排列。
@@ -162,23 +162,10 @@ def calculate_mAP(valid_df, train_df):
     recall_list = []
     for result_flg, scores in p.imap(check_match,
                                      zip(range(10), [train_df] * 10, [valid_df] * 10)):  # 采用多进程加快运行的速度,返回一个list
-        # 我的算法
-        # confidence_list = sorted(set(scores), reverse=True)
-        # for confidence in confidence_list:
-        #     index = (np.array(scores) >= confidence)
-        #     result_flg_threshold = (np.array(result_flg.copy())[index]).tolist()  # 按照阈值求解相应预测
-        #     n_tp = np.sum(result_flg_threshold)
-        #     recall = n_tp / n_gt
-        #     precision = n_tp / len(result_flg_threshold)
-        #     precision_list.append(precision)
-        #     recall_list.append(recall)
-        # ap = calculate_AP(precision_list, recall_list)
-
-        # 原作者的算法
         if np.sum(result_flg) > 0:
             n_tp = np.sum(result_flg)
-            recall = n_tp / n_gt  # recall
-            precision = n_tp / len(result_flg)  # precision
+            recall = n_tp / n_gt  # recall: TP/(TP+FP+FN)
+            precision = n_tp / len(result_flg)  # precision: TP/(TP+FP)
             ap = precision * recall  # 这样算的ap只有一个点，并不是常规的ap值。
             # ap = average_precision_score(result_flg, scores) * recall
             # average_precision_score详见：http://yongyuan.name/blog/evaluation-of-information-retrieval.html
