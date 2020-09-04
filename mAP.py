@@ -42,6 +42,7 @@ def str2coords(s, names):
     return coords
 
 
+# 计算距离差距，abs_dist指绝对误差还是相对真实值的相对误差
 def TranslationDistance(p, g, abs_dist=False):
     dx = p['x'] - g['x']
     dy = p['y'] - g['y']
@@ -55,16 +56,14 @@ def TranslationDistance(p, g, abs_dist=False):
     return diff
 
 
-# 位置计算
-# abs_dist = False？？？
-
+# 计算角度差距
 def RotationDistance(p, g):
     true = [g['pitch'], g['yaw'], g['roll']]
     pred = [p['pitch'], p['yaw'], p['roll']]
     q1 = R.from_euler('xyz', true)  # 输入轴角
     q2 = R.from_euler('xyz', pred)
     diff = R.inv(q2) * q1
-    W = np.clip(diff.as_quat()[-1], -1., 1.)  # 四元数？？？
+    W = np.clip(diff.as_quat()[-1], -1., 1.)  # 四元数
 
     # in the official metrics code:
     # https://www.kaggle.com/c/pku-autonomous-driving/overview/evaluation
